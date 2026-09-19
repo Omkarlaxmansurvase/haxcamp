@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ProductCard from '../components/ProductCard'
+import ProductDetailModal from '../components/ProductDetailModal'
 import { api } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import AnimatedTitle from '../components/animations/AnimatedTitle'
@@ -16,6 +17,7 @@ export default function Products() {
   const [category, setCategory] = useState('')
   const [loading, setLoading] = useState(true)
   const [addingId, setAddingId] = useState(null)
+  const [selectedProduct, setSelectedProduct] = useState(null)
   const [toast, setToast] = useState('')
 
   useEffect(() => {
@@ -27,15 +29,15 @@ export default function Products() {
 
   const categories = Array.from(new Set(allProducts.map((p) => p.category)))
 
-  async function handleAddToCart(product) {
+  async function handleAddToCart(product, quantity = 1) {
     if (!user) {
       setToast('Log in to add items to your cart')
       return
     }
     setAddingId(product.id)
     try {
-      await api.addToCart(product.id, 1)
-      setToast(`${product.name} added to cart`)
+      await api.addToCart(product.id, quantity)
+      setToast(`${product.name} (${quantity}) added to cart`)
     } catch (err) {
       setToast(err.message)
     } finally {
@@ -95,11 +97,12 @@ export default function Products() {
             ) : (
               <div className="product-grid">
                 {allProducts.map((p, idx) => (
-                  <ScrollReveal key={p.id} delay={Math.min((idx % 8) * 0.06, 0.4)} y={20}>
+                  <ScrollReveal key={p.id} delay={Math.min((idx % 8) * 0.05, 0.35)} y={15}>
                     <ProductCard
                       product={p}
                       onAddToCart={handleAddToCart}
                       adding={addingId === p.id}
+                      onClick={(product) => setSelectedProduct(product)}
                     />
                   </ScrollReveal>
                 ))}
@@ -108,6 +111,16 @@ export default function Products() {
           </div>
         </div>
       </div>
+
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={handleAddToCart}
+          adding={addingId === selectedProduct.id}
+        />
+      )}
+
       <Footer />
     </div>
   )

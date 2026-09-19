@@ -2,14 +2,19 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import ProductDetailModal from '../components/ProductDetailModal'
 import { api, productImage } from '../api/client'
+import { useAuth } from '../context/AuthContext'
 import AnimatedTitle from '../components/animations/AnimatedTitle'
 import AnimatedBody from '../components/animations/AnimatedBody'
 import ScrollReveal from '../components/animations/ScrollReveal'
 
 export default function Landing() {
+  const { user } = useAuth()
   const [products, setProducts] = useState([])
   const [activeCategory, setActiveCategory] = useState('Furniture')
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [addingId, setAddingId] = useState(null)
 
   useEffect(() => {
     api.getProducts().then(setProducts).catch(() => {})
@@ -20,6 +25,17 @@ export default function Landing() {
   const categoryProducts = products.filter((p) => p.category === activeCategory)
   const featured = (categoryProducts.length ? categoryProducts : products).slice(0, 4)
   const brandCount = 50
+
+  async function handleAddToCart(product, quantity = 1) {
+    if (!user) return
+    setAddingId(product.id)
+    try {
+      await api.addToCart(product.id, quantity)
+    } catch {
+    } finally {
+      setAddingId(null)
+    }
+  }
 
   // Cap and loop smoothly with GPU acceleration to prevent lag
   const sourceProducts = products.length ? products.slice(0, 8) : []
@@ -67,7 +83,14 @@ export default function Landing() {
           </div>
           <div className="media-grid">
             <ScrollReveal className="media-tile" delay={0.1} y={25}>
-              <img src={productImage(featured[0]?.image)} alt="" loading="lazy" decoding="async" />
+              <img
+                src={productImage(featured[0]?.image)}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                style={{ cursor: featured[0] ? 'pointer' : 'default' }}
+                onClick={() => featured[0] && setSelectedProduct(featured[0])}
+              />
             </ScrollReveal>
             <ScrollReveal className="media-tile" delay={0.2} y={25}>
               <img src="/images/lifestyle-1.jpg" alt="" loading="lazy" decoding="async" />
@@ -105,6 +128,8 @@ export default function Landing() {
             alt={activeCategory}
             loading="lazy"
             decoding="async"
+            style={{ cursor: featured[0] ? 'pointer' : 'default' }}
+            onClick={() => featured[0] && setSelectedProduct(featured[0])}
           />
         </ScrollReveal>
       </section>
@@ -133,7 +158,11 @@ export default function Landing() {
             {[0, 1].map((copy) => (
               <div className="carousel-half" key={copy}>
                 {loopProducts.map((p, i) => (
-                  <div key={`${copy}-${i}`} className="product-card carousel-card">
+                  <div
+                    key={`${copy}-${i}`}
+                    className="product-card carousel-card"
+                    onClick={() => setSelectedProduct(p)}
+                  >
                     <div className="product-thumb">
                       <img src={productImage(p.image)} alt={p.name} loading="lazy" decoding="async" />
                     </div>
@@ -144,6 +173,15 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={handleAddToCart}
+          adding={addingId === selectedProduct.id}
+        />
+      )}
 
       <Footer />
     </div>
