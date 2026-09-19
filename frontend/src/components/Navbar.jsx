@@ -37,7 +37,7 @@ export default function Navbar({ overlay = false }) {
               <button className="btn btn-outline btn-sm" onClick={logout}>Log out</button>
             </>
           ) : (
-            <button className="btn btn-outline" onClick={() => setShowAuth(true)}>Login</button>
+            <button className="nav-login" onClick={() => setShowAuth(true)}>Login</button>
           )}
         </div>
       </header>
