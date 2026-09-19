@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ProductCard from '../components/ProductCard'
@@ -9,16 +9,18 @@ import { useAuth } from '../context/AuthContext'
 import AnimatedTitle from '../components/animations/AnimatedTitle'
 import AnimatedBody from '../components/animations/AnimatedBody'
 import ScrollReveal from '../components/animations/ScrollReveal'
+import Toast from '../components/Toast'
 
 export default function Products() {
   const { user } = useAuth()
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const [allProducts, setAllProducts] = useState([])
   const [category, setCategory] = useState('')
   const [loading, setLoading] = useState(true)
   const [addingId, setAddingId] = useState(null)
   const [selectedProduct, setSelectedProduct] = useState(null)
-  const [toast, setToast] = useState('')
+  // const [toast, setToast] = useState('')
+  const [toast, setToast] = useState(null)
 
   useEffect(() => {
     setLoading(true)
@@ -29,22 +31,21 @@ export default function Products() {
 
   const categories = Array.from(new Set(allProducts.map((p) => p.category)))
 
-  async function handleAddToCart(product, quantity = 1) {
-    if (!user) {
-      setToast('Log in to add items to your cart')
-      return
-    }
-    setAddingId(product.id)
-    try {
-      await api.addToCart(product.id, quantity)
-      setToast(`${product.name} (${quantity}) added to cart`)
-    } catch (err) {
-      setToast(err.message)
-    } finally {
-      setAddingId(null)
-      setTimeout(() => setToast(''), 2500)
-    }
+async function handleAddToCart(product, quantity = 1) {
+  if (!user) {
+    setToast({ id: Date.now(), type: 'info', message: 'Log in to add items to your cart' })
+    return
   }
+  setAddingId(product.id)
+  try {
+    await api.addToCart(product.id, quantity)
+    setToast({ id: Date.now(), type: 'success', message: `${product.name} (${quantity}) added to cart` })
+  } catch (err) {
+    setToast({ id: Date.now(), type: 'error', message: err.message })
+  } finally {
+    setAddingId(null)
+  }
+}
 
   return (
     <div>
@@ -55,18 +56,16 @@ export default function Products() {
           <AnimatedBody text={`${allProducts.length} products`} className="page-sub" delay={0.2} />
         </div>
 
-        {toast && (
-          <ScrollReveal delay={0} y={-10}>
-            <div style={{ marginBottom: 20, fontSize: 14 }}>
-              {toast}{' '}
-              {!user && (
-                <button className="btn btn-ghost btn-sm" onClick={() => navigate('/')}>
-                  go to landing to log in
-                </button>
-              )}
-            </div>
-          </ScrollReveal>
-        )}
+{toast && (
+  <Toast
+    key={toast.id}
+    type={toast.type}
+    message={toast.message}
+    actionLabel={toast.type === 'success' ? 'View cart' : undefined}
+    actionTo="/checkout"
+    onClose={() => setToast(null)}
+  />
+)}
 
         <div className="catalog-layout">
           <aside className="catalog-sidebar">

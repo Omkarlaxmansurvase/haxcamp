@@ -33,9 +33,9 @@ export default function Navbar({ overlay = false }) {
 
         <nav className="nav-links">
           <Link to="/products" className={isActive('/products') ? 'active' : ''}>Catalog</Link>
-          <a href="#about">About</a>
-          <a href="#delivery">Delivery</a>
-          <a href="#support">Support</a>
+          <Link to="/about" className={isActive('/about') ? 'active' : ''}>About</Link>
+          <Link to="/delivery" className={isActive('/delivery') ? 'active' : ''}>Delivery</Link>
+          <Link to="/support" className={isActive('/support') ? 'active' : ''}>Support</Link>
         </nav>
 
         <div className="nav-right" ref={menuRef} style={{ position: 'relative' }}>
