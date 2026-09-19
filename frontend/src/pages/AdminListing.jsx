@@ -6,6 +6,8 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ProductEditModal from '../components/ProductEditModal'
 import { api, productImage } from '../api/client'
+import ProductCreateModal from '../components/ProductCreateModal'
+import Toast from '../components/Toast'
 
 const METRICS = {
   revenue: 'Revenue',
@@ -21,6 +23,8 @@ export default function AdminListing() {
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [metric, setMetric] = useState('revenue')
   const [error, setError] = useState('')
+  const [creating, setCreating] = useState(false)
+  const [toast, setToast] = useState(null)
 
   useEffect(() => {
     loadAll()
@@ -44,6 +48,14 @@ export default function AdminListing() {
     loadAll()
   }
 
+  // errors are thrown to the modal, which shows them inside the form
+  async function createProduct(formData) {
+  const created = await api.createProduct(formData)
+  setCreating(false)
+  loadAll()
+  setToast({ id: Date.now(), message: `${created.name} is now listed` })
+}
+
   async function confirmDelete() {
     try {
       await api.deleteProduct(deleteTarget.id)
@@ -63,9 +75,14 @@ export default function AdminListing() {
     <div>
       <Navbar />
       <div className="container" style={{ paddingBottom: 100 }}>
-        <div style={{ padding: '48px 0 30px' }}>
-          <h1 className="page-title">Listing</h1>
-          <p className="page-sub">Manage existing products, prices, and see how they're selling.</p>
+        <div className="admin-head" style={{ padding: '48px 0 30px' }}>
+          {/* <div> */}
+            {/* <h1 className="page-title">Listing</h1> */}
+            {/* <p className="page-sub">Manage existing products, prices, and see how they're selling.</p> */}
+          {/* </div> */}
+          <button className="btn btn-primary" onClick={() => setCreating(true)}>
+            + Add new listing
+          </button>
         </div>
 
         {error && <div className="form-error">{error}</div>}
@@ -188,6 +205,23 @@ export default function AdminListing() {
           </>
         )}
       </div>
+
+      {creating && (
+  <ProductCreateModal
+    categories={categories}
+    onClose={() => setCreating(false)}
+    onCreate={createProduct}
+  />
+)}
+
+{toast && (
+  <Toast
+    key={toast.id}
+    type="done"
+    message={toast.message}
+    onClose={() => setToast(null)}
+  />
+)}
 
       {editingProduct && (
         <ProductEditModal

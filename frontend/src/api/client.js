@@ -7,7 +7,8 @@ function getToken() {
 }
 
 async function request(path, { method = 'GET', body, auth = false } = {}) {
-  const headers = { 'Content-Type': 'application/json' }
+  const isForm = body instanceof FormData
+  const headers = isForm ? {} : { 'Content-Type': 'application/json' }
   if (auth) {
     const token = getToken()
     if (token) headers.Authorization = `Bearer ${token}`
@@ -15,7 +16,7 @@ async function request(path, { method = 'GET', body, auth = false } = {}) {
   const res = await fetch(`${API_BASE}/api${path}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body: body ? (isForm ? body : JSON.stringify(body)) : undefined,
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
@@ -23,7 +24,6 @@ async function request(path, { method = 'GET', body, auth = false } = {}) {
   }
   return data
 }
-
 export const api = {
   // auth
   login: (payload) => request('/auth/login', { method: 'POST', body: payload }),
@@ -37,6 +37,7 @@ export const api = {
   updateProduct: (id, payload) =>
     request(`/products/${id}`, { method: 'PUT', body: payload, auth: true }),
   deleteProduct: (id) => request(`/products/${id}`, { method: 'DELETE', auth: true }),
+  createProduct: (formData) => request('/products', { method: 'POST', body: formData, auth: true }),
 
   // cart
   getCart: () => request('/cart', { auth: true }),
