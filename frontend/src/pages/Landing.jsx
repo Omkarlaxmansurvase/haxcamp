@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import { api, productImage } from '../api/client'
 import AnimatedTitle from '../components/animations/AnimatedTitle'
 import AnimatedBody from '../components/animations/AnimatedBody'
@@ -143,6 +144,8 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   )
 }

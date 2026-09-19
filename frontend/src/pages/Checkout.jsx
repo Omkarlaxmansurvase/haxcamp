@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import { api, productImage } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
@@ -52,23 +53,24 @@ export default function Checkout() {
 
   if (ready && !user) {
     return (
-      <div>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar />
-        <div className="container">
+        <div className="container" style={{ flex: 1 }}>
           <div className="empty-state">
             <p>Log in to view your cart.</p>
             <Link to="/" className="btn btn-primary" style={{ marginTop: 16 }}>Back to home</Link>
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
 
   if (done) {
     return (
-      <div>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar />
-        <div className="container">
+        <div className="container" style={{ flex: 1 }}>
           <div className="empty-state">
             <h2 style={{ marginBottom: 12 }}>Order placed</h2>
             <p>Your order #{done} has been confirmed.</p>
@@ -77,14 +79,15 @@ export default function Checkout() {
             </Link>
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Navbar />
-      <div className="container">
+      <div className="container" style={{ flex: 1 }}>
         <div style={{ padding: '48px 0 30px' }}>
           <h1 className="page-title">Checkout</h1>
         </div>
@@ -134,6 +137,7 @@ export default function Checkout() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   )
 }

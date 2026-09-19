@@ -3,6 +3,7 @@ import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
 } from 'recharts'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import { api, productImage } from '../api/client'
 
 export default function AdminListing() {
@@ -157,6 +158,7 @@ export default function AdminListing() {
           </>
         )}
       </div>
+      <Footer />
     </div>
   )
 }

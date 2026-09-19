@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import ProductCard from '../components/ProductCard'
 import { api } from '../api/client'
 import { useAuth } from '../context/AuthContext'
@@ -107,6 +108,7 @@ export default function Products() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
