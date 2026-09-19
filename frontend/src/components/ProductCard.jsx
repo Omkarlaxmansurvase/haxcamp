@@ -4,7 +4,7 @@ export default function ProductCard({ product, onAddToCart, adding }) {
   return (
     <div className="product-card">
       <div className="product-thumb">
-        <img src={productImage(product.image)} alt={product.name} />
+        <img src={productImage(product.image)} alt={product.name} loading="lazy" decoding="async" />
       </div>
       <div className="product-meta">
         <span className="product-name">{product.name}</span>

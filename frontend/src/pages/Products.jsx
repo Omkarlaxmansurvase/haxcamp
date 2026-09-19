@@ -4,6 +4,9 @@ import Navbar from '../components/Navbar'
 import ProductCard from '../components/ProductCard'
 import { api } from '../api/client'
 import { useAuth } from '../context/AuthContext'
+import AnimatedTitle from '../components/animations/AnimatedTitle'
+import AnimatedBody from '../components/animations/AnimatedBody'
+import ScrollReveal from '../components/animations/ScrollReveal'
 
 export default function Products() {
   const { user } = useAuth()
@@ -45,38 +48,42 @@ export default function Products() {
       <Navbar />
       <div className="container">
         <div style={{ padding: '48px 0 0' }}>
-          <h1 className="page-title">Catalog</h1>
-          <p className="page-sub">{allProducts.length} products</p>
+          <AnimatedTitle text="Catalog" className="page-title" tag="h1" delay={0.05} />
+          <AnimatedBody text={`${allProducts.length} products`} className="page-sub" delay={0.2} />
         </div>
 
         {toast && (
-          <div style={{ marginBottom: 20, fontSize: 14 }}>
-            {toast}{' '}
-            {!user && (
-              <button className="btn btn-ghost btn-sm" onClick={() => navigate('/')}>
-                go to landing to log in
-              </button>
-            )}
-          </div>
+          <ScrollReveal delay={0} y={-10}>
+            <div style={{ marginBottom: 20, fontSize: 14 }}>
+              {toast}{' '}
+              {!user && (
+                <button className="btn btn-ghost btn-sm" onClick={() => navigate('/')}>
+                  go to landing to log in
+                </button>
+              )}
+            </div>
+          </ScrollReveal>
         )}
 
         <div className="catalog-layout">
           <aside className="catalog-sidebar">
-            <div
-              className={`category-item ${!category ? 'active' : ''}`}
-              onClick={() => setCategory('')}
-            >
-              All
-            </div>
-            {categories.map((cat) => (
+            <ScrollReveal delay={0.1} y={15}>
               <div
-                key={cat}
-                className={`category-item ${category === cat ? 'active' : ''}`}
-                onClick={() => setCategory(cat)}
+                className={`category-item ${!category ? 'active' : ''}`}
+                onClick={() => setCategory('')}
               >
-                {cat}
+                All
               </div>
-            ))}
+              {categories.map((cat) => (
+                <div
+                  key={cat}
+                  className={`category-item ${category === cat ? 'active' : ''}`}
+                  onClick={() => setCategory(cat)}
+                >
+                  {cat}
+                </div>
+              ))}
+            </ScrollReveal>
           </aside>
 
           <div>
@@ -86,13 +93,14 @@ export default function Products() {
               <div className="empty-state">No products in this category yet.</div>
             ) : (
               <div className="product-grid">
-                {allProducts.map((p) => (
-                  <ProductCard
-                    key={p.id}
-                    product={p}
-                    onAddToCart={handleAddToCart}
-                    adding={addingId === p.id}
-                  />
+                {allProducts.map((p, idx) => (
+                  <ScrollReveal key={p.id} delay={Math.min((idx % 8) * 0.06, 0.4)} y={20}>
+                    <ProductCard
+                      product={p}
+                      onAddToCart={handleAddToCart}
+                      adding={addingId === p.id}
+                    />
+                  </ScrollReveal>
                 ))}
               </div>
             )}
