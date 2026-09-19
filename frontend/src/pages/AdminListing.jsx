@@ -4,14 +4,22 @@ import {
 } from 'recharts'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import ProductEditModal from '../components/ProductEditModal'
 import { api, productImage } from '../api/client'
+
+const METRICS = {
+  revenue: 'Revenue',
+  units: 'Units sold',
+  buyers: 'Buyers',
+}
 
 export default function AdminListing() {
   const [products, setProducts] = useState([])
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [editingId, setEditingId] = useState(null)
-  const [editForm, setEditForm] = useState({})
+  const [editingProduct, setEditingProduct] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [metric, setMetric] = useState('revenue')
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -19,7 +27,7 @@ export default function AdminListing() {
   }, [])
 
   function loadAll() {
-    setLoading(true)
+    setError('')
     Promise.all([api.getProducts(), api.adminStats()])
       .then(([prods, s]) => {
         setProducts(prods)
@@ -29,30 +37,27 @@ export default function AdminListing() {
       .finally(() => setLoading(false))
   }
 
-  function startEdit(p) {
-    setEditingId(p.id)
-    setEditForm({ name: p.name, category: p.category, description: p.description || '', price: p.price })
+  // errors are thrown to the modal, which shows them inside the form
+  async function saveEdit(id, payload) {
+    await api.updateProduct(id, payload)
+    setEditingProduct(null)
+    loadAll()
   }
 
-  async function saveEdit(id) {
+  async function confirmDelete() {
     try {
-      await api.updateProduct(id, editForm)
-      setEditingId(null)
+      await api.deleteProduct(deleteTarget.id)
+      setDeleteTarget(null)
       loadAll()
     } catch (err) {
+      setDeleteTarget(null)
       setError(err.message)
     }
   }
 
-  async function handleDelete(id) {
-    if (!confirm('Delete this product? This cannot be undone.')) return
-    try {
-      await api.deleteProduct(id)
-      loadAll()
-    } catch (err) {
-      setError(err.message)
-    }
-  }
+  const categories = Array.from(new Set(products.map((p) => p.category)))
+  const statsById = Object.fromEntries((stats?.perProduct || []).map((s) => [s.id, s]))
+  const money = (v) => (metric === 'revenue' ? `$${v}` : v)
 
   return (
     <div>
@@ -80,84 +85,134 @@ export default function AdminListing() {
                     <div className="num">{stats.totals.units}</div>
                     <div className="lbl">units sold</div>
                   </div>
-                  <div className="stat-card">
+                  <div className="stat-card highlight">
                     <div className="num">${stats.totals.revenue.toFixed(0)}</div>
                     <div className="lbl">revenue</div>
                   </div>
                 </div>
 
                 <div className="chart-wrap">
-                  <p className="eyebrow">Revenue by product</p>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={stats.perProduct}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
-                      <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-                      <YAxis tick={{ fontSize: 12 }} />
-                      <Tooltip />
-                      <Bar dataKey="revenue" fill="#FAE993" stroke="#000" strokeWidth={1} />
+                  <div className="chart-head">
+                    <p className="eyebrow">Sales by product</p>
+                    <div className="chart-tabs">
+                      {Object.entries(METRICS).map(([key, label]) => (
+                        <button
+                          key={key}
+                          className={metric === key ? 'active' : ''}
+                          onClick={() => setMetric(key)}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={stats.perProduct} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#eee" vertical={false} />
+                      <XAxis
+                        dataKey="name"
+                        interval={0}
+                        angle={-25}
+                        textAnchor="end"
+                        height={70}
+                        tick={{ fontSize: 12, fill: '#555' }}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        allowDecimals={false}
+                        tick={{ fontSize: 12, fill: '#555' }}
+                        tickLine={false}
+                        axisLine={false}
+                        tickFormatter={money}
+                      />
+                      <Tooltip
+                        cursor={{ fill: 'rgba(0,0,0,0.04)' }}
+                        contentStyle={{ border: '1px solid #e6e6de', borderRadius: 2, boxShadow: 'none', fontSize: 13 }}
+                        formatter={(v) => [money(v), METRICS[metric]]}
+                      />
+                      <Bar dataKey={metric} fill="#FAE993" stroke="#000" strokeWidth={1} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </>
             )}
 
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Name</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((p) => (
-                  editingId === p.id ? (
-                    <tr className="edit-row" key={p.id}>
-                      <td><img src={productImage(p.image)} alt={p.name} /></td>
-                      <td>
-                        <input
-                          value={editForm.name}
-                          onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          value={editForm.category}
-                          onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={editForm.price}
-                          onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-                        />
-                      </td>
-                      <td>
-                        <button className="btn btn-primary btn-sm" onClick={() => saveEdit(p.id)}>Save</button>{' '}
-                        <button className="btn btn-ghost btn-sm" onClick={() => setEditingId(null)}>Cancel</button>
-                      </td>
-                    </tr>
-                  ) : (
-                    <tr key={p.id}>
-                      <td><img src={productImage(p.image)} alt={p.name} /></td>
-                      <td>{p.name}</td>
-                      <td>{p.category}</td>
-                      <td>${Number(p.price).toFixed(0)}</td>
-                      <td>
-                        <button className="btn btn-outline btn-sm" onClick={() => startEdit(p)}>Edit</button>{' '}
-                        <button className="btn btn-ghost btn-sm" onClick={() => handleDelete(p.id)}>Delete</button>
-                      </td>
-                    </tr>
-                  )
-                ))}
-              </tbody>
-            </table>
+            <p className="eyebrow">Products ({products.length})</p>
+
+            {products.length === 0 ? (
+              <div className="empty-state">No products listed.</div>
+            ) : (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Sold</th>
+                    <th>Buyers</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {products.map((p) => {
+                    const s = statsById[p.id]
+                    return (
+                      <tr key={p.id}>
+                        <td>
+                          <div className="admin-product">
+                            <img src={productImage(p.image)} alt={p.name} />
+                            <div>
+                              <div className="admin-product-name">{p.name}</div>
+                              {p.brand && <div className="admin-product-brand">{p.brand}</div>}
+                            </div>
+                          </div>
+                        </td>
+                        <td>{p.category}</td>
+                        <td>${Number(p.price).toFixed(0)}</td>
+                        <td>{s ? s.units : 0}</td>
+                        <td>{s ? s.buyers : 0}</td>
+                        <td className="admin-actions">
+                          <button className="btn btn-outline btn-sm" onClick={() => setEditingProduct(p)}>
+                            Edit
+                          </button>
+                          <button className="btn btn-ghost btn-sm admin-delete" onClick={() => setDeleteTarget(p)}>
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            )}
           </>
         )}
       </div>
+
+      {editingProduct && (
+        <ProductEditModal
+          product={editingProduct}
+          categories={categories}
+          onClose={() => setEditingProduct(null)}
+          onSave={saveEdit}
+        />
+      )}
+
+      {deleteTarget && (
+        <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
+          <div className="auth-card" onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ fontSize: 28, marginBottom: 8 }}>Delete {deleteTarget.name}?</h3>
+            <p style={{ color: '#666', fontSize: 14, marginBottom: 24 }}>
+              This also removes its sales history and cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button className="btn btn-dark" onClick={confirmDelete}>Delete</button>
+              <button className="btn btn-outline" onClick={() => setDeleteTarget(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   )

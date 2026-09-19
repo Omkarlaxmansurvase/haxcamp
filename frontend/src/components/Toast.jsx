@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import lottie from 'lottie-web'
 import addToCartAnimation from '../assets/add_to_cart.json'
+import { createPortal } from 'react-dom'
 
 export default function Toast({
   message,
@@ -43,19 +44,20 @@ export default function Toast({
     setTimeout(onClose, 300)
   }
 
-  return (
-    <div
-      className={`toast toast-${type} ${leaving ? 'leaving' : ''}`}
-      role="status"
-      aria-live="polite"
-    >
-      {type === 'success' && <div className="toast-icon" ref={iconRef} />}
-      <span className="toast-msg">{message}</span>
-      {actionLabel && actionTo && (
-        <Link to={actionTo} className="toast-link">{actionLabel}</Link>
-      )}
-      <button className="toast-close" onClick={handleClose} aria-label="Close">&times;</button>
-      <span className="toast-bar" style={{ animationDuration: `${duration}ms` }} />
-    </div>
-  )
+return createPortal(
+  <div
+    className={`toast toast-${type} ${leaving ? 'leaving' : ''}`}
+    role="status"
+    aria-live="polite"
+  >
+    {type === 'success' && <div className="toast-icon" ref={iconRef} />}
+    <span className="toast-msg">{message}</span>
+    {actionLabel && actionTo && (
+      <Link to={actionTo} className="toast-link">{actionLabel}</Link>
+    )}
+    <button className="toast-close" onClick={handleClose} aria-label="Close">&times;</button>
+    <span className="toast-bar" style={{ animationDuration: `${duration}ms` }} />
+  </div>,
+  document.body
+)
 }
