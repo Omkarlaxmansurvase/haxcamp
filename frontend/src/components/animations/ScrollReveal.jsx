@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
 
 export default function ScrollReveal({
   children,
@@ -13,23 +12,18 @@ export default function ScrollReveal({
   style = {},
   ...props
 }) {
-  const { ref, inView } = useInView({
-    threshold,
-    triggerOnce,
-  })
-
   return (
     <motion.div
-      ref={ref}
       initial={{ opacity: 0, y, scale: scale < 1 ? scale : 1 }}
-      animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y, scale: scale < 1 ? scale : 1 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ amount: threshold, once: triggerOnce }}
       transition={{
         duration,
         delay,
         ease: [0.2, 0.65, 0.3, 0.9],
       }}
       className={className}
-      style={{ willChange: 'transform, opacity', ...style }}
+      style={style}
       {...props}
     >
       {children}

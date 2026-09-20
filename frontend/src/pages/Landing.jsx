@@ -31,7 +31,6 @@ export default function Landing() {
     setAddingId(product.id)
     try {
       await api.addToCart(product.id, quantity)
-    } catch {
     } finally {
       setAddingId(null)
     }

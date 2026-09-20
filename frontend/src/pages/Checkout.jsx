@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { api, productImage } from '../api/client'
@@ -7,7 +7,6 @@ import { useAuth } from '../context/AuthContext'
 
 export default function Checkout() {
   const { user, ready } = useAuth()
-  const navigate = useNavigate()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [placing, setPlacing] = useState(false)

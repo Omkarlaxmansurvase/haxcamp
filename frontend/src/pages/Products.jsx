@@ -23,7 +23,6 @@ export default function Products() {
   const [toast, setToast] = useState(null)
 
   useEffect(() => {
-    setLoading(true)
     api.getProducts(category || undefined)
       .then(setAllProducts)
       .finally(() => setLoading(false))

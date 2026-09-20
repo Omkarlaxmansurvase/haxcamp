@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 
 const MAX_SIZE = 5 * 1024 * 1024
@@ -29,7 +29,6 @@ const WIDE_FIELDS = [
 export default function ProductCreateModal({ categories = [], onClose, onCreate }) {
   const [form, setForm] = useState(EMPTY)
   const [file, setFile] = useState(null)
-  const [preview, setPreview] = useState('')
   const [dragging, setDragging] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -42,16 +41,13 @@ export default function ProductCreateModal({ categories = [], onClose, onCreate 
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [onClose])
 
-  // live preview of the chosen image
+  const preview = useMemo(() => (file ? URL.createObjectURL(file) : ''), [file])
+
   useEffect(() => {
-    if (!file) {
-      setPreview('')
-      return
+    return () => {
+      if (preview) URL.revokeObjectURL(preview)
     }
-    const url = URL.createObjectURL(file)
-    setPreview(url)
-    return () => URL.revokeObjectURL(url)
-  }, [file])
+  }, [preview])
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }))
