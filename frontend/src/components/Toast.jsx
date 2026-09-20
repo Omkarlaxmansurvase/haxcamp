@@ -6,16 +6,15 @@ import addToCartAnimation from '../assets/add_to_cart.json'
 import doneAnimation from '../assets/done.json'
 import wrongAnimation from '../assets/wrong.json'
 
-// which animation each toast type plays ('info' has none)
 const ANIMATIONS = {
-  success: addToCartAnimation, // item added to cart
-  done: doneAnimation,         // something completed, e.g. product listed
-  error: wrongAnimation,       // something failed
+  success: addToCartAnimation,
+  done: doneAnimation,
+  error: wrongAnimation,
 }
 
 export default function Toast({
   message,
-  type = 'info', // 'success' | 'done' | 'error' | 'info'
+  type = 'info',
   actionLabel,
   actionTo,
   duration = 3500,
@@ -25,7 +24,6 @@ export default function Toast({
   const iconRef = useRef(null)
   const animationData = ANIMATIONS[type]
 
-  // auto-dismiss: fade out shortly before closing
   useEffect(() => {
     const hide = setTimeout(() => setLeaving(true), duration - 300)
     const done = setTimeout(onClose, duration)
@@ -33,10 +31,8 @@ export default function Toast({
       clearTimeout(hide)
       clearTimeout(done)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration])
+  }, [duration, onClose])
 
-  // play the animation for this toast type once
   useEffect(() => {
     if (!animationData) return
     const anim = lottie.loadAnimation({

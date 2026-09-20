@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react'
 import {
-  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
 } from 'recharts'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -41,20 +47,18 @@ export default function AdminListing() {
       .finally(() => setLoading(false))
   }
 
-  // errors are thrown to the modal, which shows them inside the form
   async function saveEdit(id, payload) {
     await api.updateProduct(id, payload)
     setEditingProduct(null)
     loadAll()
   }
 
-  // errors are thrown to the modal, which shows them inside the form
   async function createProduct(formData) {
-  const created = await api.createProduct(formData)
-  setCreating(false)
-  loadAll()
-  setToast({ id: Date.now(), message: `${created.name} is now listed` })
-}
+    const created = await api.createProduct(formData)
+    setCreating(false)
+    loadAll()
+    setToast({ id: Date.now(), message: `${created.name} is now listed` })
+  }
 
   async function confirmDelete() {
     try {
@@ -76,10 +80,6 @@ export default function AdminListing() {
       <Navbar />
       <div className="container" style={{ paddingBottom: 100 }}>
         <div className="admin-head" style={{ padding: '48px 0 30px' }}>
-          {/* <div> */}
-            {/* <h1 className="page-title">Listing</h1> */}
-            {/* <p className="page-sub">Manage existing products, prices, and see how they're selling.</p> */}
-          {/* </div> */}
           <button className="btn btn-primary" onClick={() => setCreating(true)}>
             + Add new listing
           </button>
@@ -88,7 +88,7 @@ export default function AdminListing() {
         {error && <div className="form-error">{error}</div>}
 
         {loading ? (
-          <p>Loading…</p>
+          <p>Loading?</p>
         ) : (
           <>
             {stats && (
@@ -123,6 +123,7 @@ export default function AdminListing() {
                       ))}
                     </div>
                   </div>
+
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={stats.perProduct} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#eee" vertical={false} />
@@ -144,7 +145,12 @@ export default function AdminListing() {
                       />
                       <Tooltip
                         cursor={{ fill: 'rgba(0,0,0,0.04)' }}
-                        contentStyle={{ border: '1px solid #e6e6de', borderRadius: 2, boxShadow: 'none', fontSize: 13 }}
+                        contentStyle={{
+                          border: '1px solid #e6e6de',
+                          borderRadius: 2,
+                          boxShadow: 'none',
+                          fontSize: 13,
+                        }}
                         formatter={(v) => [money(v), METRICS[metric]]}
                       />
                       <Bar dataKey={metric} fill="#FAE993" stroke="#000" strokeWidth={1} />
@@ -207,21 +213,21 @@ export default function AdminListing() {
       </div>
 
       {creating && (
-  <ProductCreateModal
-    categories={categories}
-    onClose={() => setCreating(false)}
-    onCreate={createProduct}
-  />
-)}
+        <ProductCreateModal
+          categories={categories}
+          onClose={() => setCreating(false)}
+          onCreate={createProduct}
+        />
+      )}
 
-{toast && (
-  <Toast
-    key={toast.id}
-    type="done"
-    message={toast.message}
-    onClose={() => setToast(null)}
-  />
-)}
+      {toast && (
+        <Toast
+          key={toast.id}
+          type="done"
+          message={toast.message}
+          onClose={() => setToast(null)}
+        />
+      )}
 
       {editingProduct && (
         <ProductEditModal
@@ -240,8 +246,12 @@ export default function AdminListing() {
               This also removes its sales history and cannot be undone.
             </p>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button className="btn btn-dark" onClick={confirmDelete}>Delete</button>
-              <button className="btn btn-outline" onClick={() => setDeleteTarget(null)}>Cancel</button>
+              <button className="btn btn-dark" onClick={confirmDelete}>
+                Delete
+              </button>
+              <button className="btn btn-outline" onClick={() => setDeleteTarget(null)}>
+                Cancel
+              </button>
             </div>
           </div>
         </div>

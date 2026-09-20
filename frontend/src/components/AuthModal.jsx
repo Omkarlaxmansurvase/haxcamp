@@ -21,7 +21,6 @@ export default function AuthModal({ onClose }) {
     e.preventDefault()
     setError('')
 
-    // Basic client validation
     if (!form.email.includes('@')) {
       setError('Please enter a valid email address.')
       return
@@ -109,7 +108,6 @@ export default function AuthModal({ onClose }) {
           ) : (
             <>
               <div className="auth-header">
-                {/* <span className="auth-tag">{"{ Luma Access }"}</span> */}
                 <h3 className="auth-title">
                   {tab === 'login' ? 'Sign in to Luma' : 'Create an Account'}
                 </h3>
@@ -120,7 +118,6 @@ export default function AuthModal({ onClose }) {
                 </p>
               </div>
 
-              {/* Animated Role Toggle */}
               <div className="role-toggle">
                 <button
                   type="button"
@@ -152,7 +149,6 @@ export default function AuthModal({ onClose }) {
                 </button>
               </div>
 
-              {/* Animated Tab Switch */}
               <div className="auth-tabs">
                 <button
                   type="button"
@@ -190,7 +186,6 @@ export default function AuthModal({ onClose }) {
                 </button>
               </div>
 
-              {/* Animated Error Alert */}
               <AnimatePresence>
                 {error && (
                   <motion.div

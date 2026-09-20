@@ -1,5 +1,3 @@
-// Base URL of your Express API. Set VITE_API_URL in a .env file at the
-// project root, e.g. VITE_API_URL=http://localhost:4000
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000'
 
 function getToken() {
@@ -9,28 +7,32 @@ function getToken() {
 async function request(path, { method = 'GET', body, auth = false } = {}) {
   const isForm = body instanceof FormData
   const headers = isForm ? {} : { 'Content-Type': 'application/json' }
+
   if (auth) {
     const token = getToken()
     if (token) headers.Authorization = `Bearer ${token}`
   }
+
   const res = await fetch(`${API_BASE}/api${path}`, {
     method,
     headers,
     body: body ? (isForm ? body : JSON.stringify(body)) : undefined,
   })
+
   const data = await res.json().catch(() => ({}))
+
   if (!res.ok) {
     throw new Error(data.error || 'Something went wrong')
   }
+
   return data
 }
+
 export const api = {
-  // auth
   login: (payload) => request('/auth/login', { method: 'POST', body: payload }),
   register: (payload) => request('/auth/register', { method: 'POST', body: payload }),
   me: () => request('/auth/me', { auth: true }),
 
-  // products
   getProducts: (category) =>
     request(`/products${category ? `?category=${encodeURIComponent(category)}` : ''}`),
   getProduct: (id) => request(`/products/${id}`),
@@ -39,7 +41,6 @@ export const api = {
   deleteProduct: (id) => request(`/products/${id}`, { method: 'DELETE', auth: true }),
   createProduct: (formData) => request('/products', { method: 'POST', body: formData, auth: true }),
 
-  // cart
   getCart: () => request('/cart', { auth: true }),
   addToCart: (productId, quantity = 1) =>
     request('/cart', { method: 'POST', body: { productId, quantity }, auth: true }),
@@ -47,20 +48,15 @@ export const api = {
     request(`/cart/${itemId}`, { method: 'PATCH', body: { quantity }, auth: true }),
   removeCartItem: (itemId) => request(`/cart/${itemId}`, { method: 'DELETE', auth: true }),
 
-  // orders
   checkout: () => request('/orders/checkout', { method: 'POST', auth: true }),
   buyNow: (productId, quantity = 1) =>
     request('/orders/buy-now', { method: 'POST', body: { productId, quantity }, auth: true }),
   myOrders: () => request('/orders/mine', { auth: true }),
 
-  // admin
   adminStats: () => request('/admin/stats', { auth: true }),
   adminOrders: () => request('/admin/orders', { auth: true }),
 }
 
-// Product images live in /public/images/products on the frontend (no
-// cloud storage) — this just resolves whatever path the backend stores
-// on the product ("chair.jpg" or "/images/products/chair.jpg").
 export function productImage(path) {
   if (!path) return '/images/products/placeholder.jpg'
   return path.startsWith('/') || path.startsWith('http')

@@ -3,7 +3,7 @@ import lottie from 'lottie-web'
 import Navbar from '../components/Navbar'
 import animationData from '../assets/delivery.json'
 
-const FOUNDED_YEAR = '2024' // set your year here
+const FOUNDED_YEAR = '2024'
 
 const facts = [
   { title: 'Founded', detail: FOUNDED_YEAR },

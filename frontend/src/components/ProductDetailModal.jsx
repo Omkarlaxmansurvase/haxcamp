@@ -18,7 +18,6 @@ export default function ProductDetailModal({ product, onClose, onAddToCart, addi
 
   if (!product) return null
 
-  // Ensure features are parsed cleanly whether array or string
   let featuresList = []
   if (Array.isArray(product.features)) {
     featuresList = product.features
@@ -76,7 +75,6 @@ export default function ProductDetailModal({ product, onClose, onAddToCart, addi
           </button>
 
           <div className="product-modal-grid">
-            {/* Left Column: Product Image */}
             <div className="product-modal-media">
               <div className="product-modal-image-wrap">
                 <img
@@ -87,7 +85,6 @@ export default function ProductDetailModal({ product, onClose, onAddToCart, addi
               </div>
             </div>
 
-            {/* Right Column: Details & Specs */}
             <div className="product-modal-info">
               <div className="product-modal-header">
                 <span className="product-modal-category">
@@ -99,14 +96,12 @@ export default function ProductDetailModal({ product, onClose, onAddToCart, addi
                 </div>
               </div>
 
-              {/* Description */}
               <div className="product-modal-section">
                 <p className="product-modal-desc">
                   {product.long_description || product.description || 'Thoughtfully crafted design piece blending timeless aesthetics with everyday function.'}
                 </p>
               </div>
 
-              {/* Specifications / Detail Lines */}
               {specRows.length > 0 && (
                 <div className="product-modal-specs">
                   <span className="product-modal-section-title">Specifications</span>
@@ -121,7 +116,6 @@ export default function ProductDetailModal({ product, onClose, onAddToCart, addi
                 </div>
               )}
 
-              {/* Features List */}
               {featuresList.length > 0 && (
                 <div className="product-modal-features">
                   <span className="product-modal-section-title">Highlights</span>
@@ -133,7 +127,6 @@ export default function ProductDetailModal({ product, onClose, onAddToCart, addi
                 </div>
               )}
 
-              {/* Add to Cart Actions */}
               <div className="product-modal-actions">
                 <div className="product-qty-wrap">
                   <button
