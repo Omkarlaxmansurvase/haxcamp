@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { productImage } from '../api/client'
+import useLockBodyScroll from '../hooks/useLockBodyScroll'
 
 export default function ProductDetailModal({ product, onClose, onAddToCart, adding }) {
+  useLockBodyScroll()
   const [qty, setQty] = useState(1)
   const [added, setAdded] = useState(false)
 

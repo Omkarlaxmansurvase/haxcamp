@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-// import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ProductCard from '../components/ProductCard'
@@ -13,13 +12,11 @@ import Toast from '../components/Toast'
 
 export default function Products() {
   const { user } = useAuth()
-  // const navigate = useNavigate()
   const [allProducts, setAllProducts] = useState([])
   const [category, setCategory] = useState('')
   const [loading, setLoading] = useState(true)
   const [addingId, setAddingId] = useState(null)
   const [selectedProduct, setSelectedProduct] = useState(null)
-  // const [toast, setToast] = useState('')
   const [toast, setToast] = useState(null)
 
   useEffect(() => {
@@ -30,21 +27,21 @@ export default function Products() {
 
   const categories = Array.from(new Set(allProducts.map((p) => p.category)))
 
-async function handleAddToCart(product, quantity = 1) {
-  if (!user) {
-    setToast({ id: Date.now(), type: 'info', message: 'Log in to add items to your cart' })
-    return
+  async function handleAddToCart(product, quantity = 1) {
+    if (!user) {
+      setToast({ id: Date.now(), type: 'info', message: 'Log in to add items to your cart' })
+      return
+    }
+    setAddingId(product.id)
+    try {
+      await api.addToCart(product.id, quantity)
+      setToast({ id: Date.now(), type: 'success', message: `${product.name} (${quantity}) added to cart` })
+    } catch (err) {
+      setToast({ id: Date.now(), type: 'error', message: err.message })
+    } finally {
+      setAddingId(null)
+    }
   }
-  setAddingId(product.id)
-  try {
-    await api.addToCart(product.id, quantity)
-    setToast({ id: Date.now(), type: 'success', message: `${product.name} (${quantity}) added to cart` })
-  } catch (err) {
-    setToast({ id: Date.now(), type: 'error', message: err.message })
-  } finally {
-    setAddingId(null)
-  }
-}
 
   return (
     <div>
@@ -52,23 +49,28 @@ async function handleAddToCart(product, quantity = 1) {
       <div className="container">
         <div style={{ padding: '48px 0 0' }}>
           <AnimatedTitle text="Catalog" className="page-title" tag="h1" delay={0.05} />
-          <AnimatedBody text={`${allProducts.length} products`} className="page-sub" delay={0.2} />
+          <AnimatedBody
+            // text={`${allProducts.length} products · click any product to see its details`}
+            className="page-sub"
+            delay={0.2}
+          />
         </div>
 
-{toast && (
-  <Toast
-    key={toast.id}
-    type={toast.type}
-    message={toast.message}
-    actionLabel={toast.type === 'success' ? 'View cart' : undefined}
-    actionTo="/checkout"
-    onClose={() => setToast(null)}
-  />
-)}
+        {toast && (
+          <Toast
+            key={toast.id}
+            type={toast.type}
+            message={toast.message}
+            actionLabel={toast.type === 'success' ? 'View cart' : undefined}
+            actionTo="/checkout"
+            onClose={() => setToast(null)}
+          />
+        )}
 
         <div className="catalog-layout">
           <aside className="catalog-sidebar">
             <ScrollReveal delay={0.1} y={15}>
+              <p className="eyebrow">Categories</p>
               <div
                 className={`category-item ${!category ? 'active' : ''}`}
                 onClick={() => setCategory('')}

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { productImage } from '../api/client'
+import useLockBodyScroll from '../hooks/useLockBodyScroll'
 
 export default function ProductEditModal({ product, categories = [], onClose, onSave }) {
+   useLockBodyScroll()
   const [form, setForm] = useState({
     name: product.name || '',
     category: product.category || '',

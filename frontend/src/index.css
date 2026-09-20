@@ -180,7 +180,7 @@ p {
   display: flex;
   gap: 36px;
   font-family: var(--font-serif);
-  font-size: 17px;
+  font-size: 18px;
   color: #222;
 }
 
@@ -384,7 +384,8 @@ p {
 .hero .subtitle {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 22px;
+  font-size: 28px;
+  font-weight: 400;
   color: #444;
 }
 
@@ -439,7 +440,7 @@ p {
 }
 
 .lead-text {
-  font-size: 26px;
+  font-size: 36px;
   font-family: var(--font-serif);
   max-width: 480px;
   margin-bottom: 20px;
@@ -1103,7 +1104,7 @@ p {
 
 .nav-login {
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: 19px;
   color: #222;
   padding: 4px 0;
 }
@@ -2105,4 +2106,60 @@ p {
   display: grid;
   place-items: center;
   font-size: 14px;
+}
+/* ---------- catalog polish ---------- */
+
+/* "View details" bar slides up over the image on hover */
+.catalog-layout .product-thumb { position: relative; }
+.catalog-layout .product-thumb::after {
+  content: 'View details';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px;
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  background: var(--yellow);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+.catalog-layout .product-card:hover .product-thumb::after { transform: translateY(0); }
+
+.catalog-layout .product-thumb img { transition: transform 0.5s ease; }
+.catalog-layout .product-card:hover .product-thumb img { transform: scale(1.04); }
+
+/* touch screens have no hover, so keep the bar visible */
+@media (hover: none) {
+  .catalog-layout .product-thumb::after { transform: none; }
+}
+
+/* sidebar: stays in view while scrolling, clearer hover */
+.catalog-sidebar { position: sticky; top: 24px; align-self: start; }
+.catalog-sidebar .category-item {
+  cursor: pointer;
+  transition: color 0.2s ease, padding-left 0.2s ease;
+}
+.catalog-sidebar .category-item:hover { color: var(--black); padding-left: 6px; }
+
+@media (max-width: 800px) {
+  .catalog-sidebar { position: static; }
+}
+/* ---------- hero intro animation ---------- */
+
+@keyframes hero-zoom {
+  from { opacity: 0; transform: scale(0.85); filter: blur(8px); }
+  to   { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+.hero-content h1,
+.hero-content .subtitle {
+  opacity: 0;
+  animation: hero-zoom 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-content h1,
+  .hero-content .subtitle { animation: none; opacity: 1; }
 }

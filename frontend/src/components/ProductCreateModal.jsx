@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
+import useLockBodyScroll from '../hooks/useLockBodyScroll'
+
 
 const MAX_SIZE = 5 * 1024 * 1024
 
@@ -27,6 +29,7 @@ const WIDE_FIELDS = [
 ]
 
 export default function ProductCreateModal({ categories = [], onClose, onCreate }) {
+   useLockBodyScroll()
   const [form, setForm] = useState(EMPTY)
   const [file, setFile] = useState(null)
   const [dragging, setDragging] = useState(false)
