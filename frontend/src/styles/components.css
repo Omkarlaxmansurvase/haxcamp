@@ -145,6 +145,53 @@
   }
 }
 
+@media (max-width: 600px) {
+  .hero {
+    min-height: 620px;
+    padding: 80px 20px 36px;
+    flex-direction: column;
+  }
+
+  .hero-content {
+    width: 100%;
+  }
+
+  .hero h1 {
+    font-size: clamp(34px, 11vw, 48px);
+    margin-left: 0;
+  }
+
+  .hero .subtitle {
+    margin-top: 12px;
+    font-size: 22px;
+  }
+
+  .hero-note {
+    position: static;
+    width: min(100%, 300px);
+    margin-top: 28px;
+    text-align: center;
+  }
+
+  .hero-note p {
+    line-height: 1.5;
+  }
+
+  .hero-note .btn {
+    margin-top: 18px;
+  }
+
+  .section { padding: 60px 0; }
+  .lead-text { font-size: 30px; }
+  .body-text { font-size: 14px; }
+  .media-grid { gap: 12px; }
+  .category-list { padding: 44px 20px; }
+  .category-row { padding: 14px 0; }
+  .category-row.active .category-name { font-size: 30px; }
+  .category-row:not(.active) .category-name { font-size: 23px; }
+  .category-media { min-height: 260px; height: 280px; }
+}
+
 
 
 .categories-section {

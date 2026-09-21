@@ -20,7 +20,7 @@ export default function Checkout() {
   }, [ready, user])
 
   function loadCart() {
-    setLoading(true)
+    // setLoading(true)
     api.getCart().then(setItems).finally(() => setLoading(false))
   }
 

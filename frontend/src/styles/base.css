@@ -346,3 +346,10 @@ p {
     display: none;
   }
 }
+
+@media (max-width: 600px) {
+  .navbar { padding: 20px; }
+  .navbar .logo { font-size: 24px; }
+  .nav-user { display: none; }
+  .btn { min-height: 42px; padding: 11px 18px; }
+}
