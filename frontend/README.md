@@ -9,6 +9,7 @@ Built with React, Node.js/Express and PostgreSQL
 |---|---|
 | **Live app** | https://luma.omkxr.in |
 | **GitHub** | https://github.com/Omkarlaxmansurvase/haxcamp |
+| **API documentation** | [Google Doc](https://docs.google.com/document/d/1WTfMA_fUtqDJCQD-VXFbtMvQSnXSHgu6q3qBxp3jUPs/edit?usp=sharing) |
 
 > **Note:** the backend and database run on Render's free tier. If the site has been idle,
 > the first request can take up to a minute while the server wakes up. Please give it a
@@ -131,8 +132,10 @@ order_items  (id, order_id, product_id, quantity, price)
   orders.
 - Deleting a product also deletes its order items (its sales history) and its Cloudinary image.
 
+## API reference
 
-```
+The full list of endpoints, with request bodies and example responses, is in the
+[API documentation](https://docs.google.com/document/d/1WTfMA_fUtqDJCQD-VXFbtMvQSnXSHgu6q3qBxp3jUPs/edit?usp=sharing).
 
 ---
 
@@ -153,14 +156,7 @@ git clone https://github.com/Omkarlaxmansurvase/haxcamp.git
 cd haxcamp
 ```
 
-### 1. Database
-
-```bash
-createdb luma
-psql -d luma -f backend/sql/schema.sql
-```
-
-### 2. Backend
+### 1. Backend
 
 ```bash
 cd backend
@@ -183,7 +179,7 @@ npm run dev
 
 Check http://localhost:5000/api/health.
 
-### 3. Frontend
+### 2. Frontend
 
 ```bash
 cd frontend
@@ -211,8 +207,6 @@ the first products.
 - **Frontend:** Vercel, root directory `frontend`, environment variable `VITE_API_URL` set to the
   backend URL. `vercel.json` rewrites all routes to `index.html` so React Router pages survive a refresh.
 - **Domain:** a `luma` subdomain on a Hostinger domain, pointed to Vercel with a CNAME record.
-
-
 
 ## Author
 
