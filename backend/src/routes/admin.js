@@ -44,6 +44,7 @@ router.get('/stats', async (req, res) => {
 router.get('/orders', async (req, res) => {
   const { rows } = await pool.query(
     `SELECT o.id, o.bought_at, u.name AS user_name, u.email,
+       o.shipping_name, o.phone, o.address_line, o.city, o.state, o.postal_code, o.country,
        json_agg(json_build_object(
          'name', p.name, 'quantity', oi.quantity, 'price', oi.price
        )) AS items,

@@ -1,0 +1,25 @@
+const SHIPPING_COUNTRIES = [
+  { name: 'India', code: 'IN', currency: 'INR' },
+  { name: 'United States', code: 'US', currency: 'USD' },
+  { name: 'United Kingdom', code: 'GB', currency: 'GBP' },
+  { name: 'France', code: 'FR', currency: 'EUR' },
+  { name: 'Germany', code: 'DE', currency: 'EUR' },
+  { name: 'Italy', code: 'IT', currency: 'EUR' },
+  { name: 'Spain', code: 'ES', currency: 'EUR' },
+  { name: 'Netherlands', code: 'NL', currency: 'EUR' },
+  { name: 'Canada', code: 'CA', currency: 'CAD' },
+  { name: 'Australia', code: 'AU', currency: 'AUD' },
+  { name: 'Singapore', code: 'SG', currency: 'SGD' },
+  { name: 'United Arab Emirates', code: 'AE', currency: 'AED' },
+  { name: 'Japan', code: 'JP', currency: 'JPY' },
+  { name: 'New Zealand', code: 'NZ', currency: 'NZD' },
+  { name: 'Switzerland', code: 'CH', currency: 'CHF' },
+  { name: 'China', code: 'CN', currency: 'CNY' },
+  { name: 'Hong Kong', code: 'HK', currency: 'HKD' },
+  { name: 'South Korea', code: 'KR', currency: 'KRW' },
+  { name: 'Malaysia', code: 'MY', currency: 'MYR' },
+  { name: 'Thailand', code: 'TH', currency: 'THB' },
+  { name: 'South Africa', code: 'ZA', currency: 'ZAR' },
+]
+
+export default SHIPPING_COUNTRIES

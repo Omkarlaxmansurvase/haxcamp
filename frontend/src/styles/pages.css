@@ -412,6 +412,65 @@
 .checkout-summary .btn { width: 100%; margin-top: 24px; padding: 16px 26px; }
 .checkout-note { font-size: 13px; color: #444; margin-top: 16px; text-align: center; }
 
+.shipping-modal-overlay { z-index: 120; }
+.shipping-modal-card {
+  position: relative;
+  width: min(620px, calc(100vw - 32px));
+  max-height: min(90vh, 820px);
+  overflow-y: auto;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25);
+}
+.shipping-form { padding: 42px 44px 34px; }
+.shipping-form-heading .eyebrow { margin-bottom: 6px; }
+.shipping-form-heading h2 { font-size: 28px; line-height: 1.1; margin: 0 0 20px; }
+.shipping-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; }
+.shipping-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.shipping-field span { font-size: 12px; letter-spacing: 0.03em; }
+.shipping-field input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 11px;
+  border: 1px solid rgba(0, 0, 0, 0.24);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--black);
+  font: inherit;
+}
+.shipping-field input:focus { outline: 2px solid var(--black); outline-offset: 1px; }
+.shipping-field select {
+  font-family: 'Noto Color Emoji', inherit;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 11px;
+  border: 1px solid rgba(0, 0, 0, 0.24);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--black);
+  font: inherit;
+}
+.shipping-field select:focus { outline: 2px solid var(--black); outline-offset: 1px; }
+.shipping-field-wide { grid-column: 1 / -1; }
+.shipping-submit { width: 100%; margin-top: 20px; padding: 15px 18px; }
+.shipping-secure-note { font-size: 12px; text-align: center; margin-top: 12px; color: #444; }
+.shipping-price-preview { display: flex; justify-content: space-between; align-items: baseline; margin-top: 20px; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.shipping-price-preview strong { font-family: var(--font-serif); font-size: 28px; font-weight: 400; }
+.shipping-rate-note { margin-top: 10px; color: #555; font-size: 12px; }
+.checkout-country-field { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; font-size: 13px; }
+.checkout-country-field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 11px;
+  border: 1px solid rgba(0, 0, 0, 0.24);
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--black);
+  font: inherit;
+}
+.checkout-country-field select:focus { outline: 2px solid var(--black); outline-offset: 1px; }
+
 .empty-state h2 { font-size: 44px; margin-bottom: 12px; }
 
 .checkout-done {

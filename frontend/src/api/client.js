@@ -48,7 +48,8 @@ export const api = {
     request(`/cart/${itemId}`, { method: 'PATCH', body: { quantity }, auth: true }),
   removeCartItem: (itemId) => request(`/cart/${itemId}`, { method: 'DELETE', auth: true }),
 
-  checkout: () => request('/orders/checkout', { method: 'POST', auth: true }),
+  checkout: (shipping) => request('/orders/checkout', { method: 'POST', body: shipping, auth: true }),
+  verifyPayment: (payload) => request('/orders/verify-payment', { method: 'POST', body: payload, auth: true }),
   buyNow: (productId, quantity = 1) =>
     request('/orders/buy-now', { method: 'POST', body: { productId, quantity }, auth: true }),
   myOrders: () => request('/orders/mine', { auth: true }),
